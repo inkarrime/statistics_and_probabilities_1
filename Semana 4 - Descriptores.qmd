@@ -1,0 +1,206 @@
+---
+title: "Semana 4"
+author: "Mariano Prado"
+date: "14 abril, 2024"
+format: html
+editor: visual
+---
+
+# Cargando una matrix
+
+```{r}
+valores1 <- c( 250.5, 320.0, 345.5, 260.4, 358.2, 268.5, 380.1, 410.2, 430.4, 480.3, 410.3, 420.1)
+valores2 <- c( 250.5, 320.0, 345.5, 260.4, 358.2, 268.5, 380.1, 410.2, 430.4, 480.3, 410.3, 8000)
+valores1
+```
+
+```{r}
+# creando matriz a partir de vectores
+datos_3 <- matrix(c(valores1, valores2),
+                    nrow = 12,
+                    ncol = 2)
+datos_3
+```
+
+```{r}
+# Agregar nombres de columnas
+colnames(datos_3) <- c('valores1', 'valores2')
+datos_3
+```
+
+```{r}
+# Convertir en dataframe
+datos_3 <- as.data.frame(datos_3)
+str(datos_3)
+datos_3
+```
+
+# Media
+
+```{r}
+mean(datos_3$valores1)
+round(mean(datos_3$valores1), 2) #Redondeando la media a dos decimales.
+```
+
+Si a los datos los multiplico a divido por una constante, la media de esos nuevos datos también se dividen o multiplican por la misma constante.
+
+```{r}
+x <- datos_3$valores1 * 1.5
+x
+mean(x)
+```
+
+```{r}
+mean(datos_3$valores1) * 1.5 
+```
+
+## Propiedades
+
+**1. Está afectada por valores extremos (altos o pequeños).**
+
+```{r}
+datos_3$valores1
+datos_3$valores2
+```
+
+```{r}
+mean(datos_3$valores1)
+mean(datos_3$valores2)
+```
+
+**2. Si la media sustituye a cada observación, la suma total no cambia.**
+
+```{r}
+length(datos_3$valores1) #Cantidad de datos
+mean(datos_3$valores1)  # Media
+length(datos_3$valores1) * mean(datos_3$valores1)
+```
+
+```{r}
+sum(datos_3$valores1)
+```
+
+**3. La suma de las desviaciones de las observaciones con respecto a la media es igual a cero.**
+
+```{r}
+desviaciones <- datos_3$valores1 - mean(datos_3$valores1)
+desviaciones
+```
+
+```{r}
+options(scipen = 999)  # Elimina la notación científica decimal
+sum(desviaciones)
+```
+
+# Mediana
+
+```{r}
+median(datos_3$valores1)
+```
+
+## Propiedades
+
+**1. La mediana divide a las “n” observaciones previamente ordenadas, en dos partes iguales. El 50% con valores menores a la mediana y el otro 50% con valores mayores a la mediana.**\\
+
+**2. No está influenciada por valores extremos.**
+
+```{r}
+datos_3$valores1
+datos_3$valores2
+```
+
+```{r}
+median(datos_3$valores1)
+median(datos_3$valores2)
+```
+
+# Moda
+
+Encontrar la moda de los datos.
+
+```{r}
+library(DescTools)
+Mode(datos_3$valores1)
+datos_3$valores1
+```
+
+```{r}
+x <- c(160,124,156,164,178,163,163,178,164,185,196,164,170,145,164)
+Mode(x)
+```
+
+# Media ponderada
+
+```{r}
+peso1 <- 0.25
+peso2 <- 0.4
+Peso3 <- 0.35
+
+nota1 <- 12
+nota2 <- 20
+nota3 <- 0.5
+
+(peso1 * nota1 + peso2 * nota2 + Peso3 * nota3) / 1
+
+```
+
+# Varianza
+
+```{r}
+var(datos_3$valores1)
+var(datos_3$valores2)
+```
+
+# Desviacion estandar
+
+```{r}
+sd(datos_3$valores1)
+sd(datos_3$valores2)
+```
+
+```{r}
+sqrt(var(datos_3$valores1))
+sqrt(var(datos_3$valores2))
+```
+
+# Coeficiente de variacion (%)
+
+```{r}
+sd(datos_3$valores1) / mean(datos_3$valores1) * 100
+sd(datos_3$valores2) / mean(datos_3$valores2) * 100
+```
+
+# Cuantiles
+
+Ejemplo
+
+Se tienen las notas de los promedios ponderados de los estudiantes graduados en el último ciclo. Halle el promedio ponderado mínimo para que un alumno sea considerado dentro del quinto superior.
+
+```{r}
+x <- c(10.5, 10.9, 11.2, 11.3, 11.5, 11.5, 11.7, 12.8, 12.9, 13.6, 13.7, 13.9, 14.0, 15.6)
+x
+```
+
+**Hallando los Quintiles**
+
+```{r}
+p <- c(0.2, 0.4, 0.6, 0.8)  # 5 grupos, 4 cortes.
+quantile(x, probs = p) 
+```
+
+**Hallando los Cuartiles**
+
+```{r}
+p <- c(0.25, 0.5, 0.75) # 4 partes, 3 Cortes
+quantile(x, probs = p) 
+```
+
+```{r}
+median(x)
+```
+
+**Resumen de los datos**
+
+```{r}
+summary(x)
+```

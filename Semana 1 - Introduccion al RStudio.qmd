@@ -1,0 +1,133 @@
+---
+title: "Semana 1 - Introduccion al RStudio"
+author: "Mariano Prado"
+date: "22 de agosto, 2025"
+format: html
+editor: visual
+output:
+  html_notebook:
+    toc: yes                # Crea tabla de contenido
+    toc_float:             
+       collapsed: yes       # Aparecen solo con los encabezados de nivel superior
+       smooth_scroll: no    # Desplazamientos "animados" en vez de directos
+    number_sections: yes    # numerar secciones y subsecciones
+    theme: journal
+  html_document:
+    toc: yes
+    df_print: paged
+---
+
+# Quarto
+
+[Link de Quarto](https://quarto.org/)
+
+## Imagen
+
+![](images/quarto-01.png){fig-align="center"}
+
+![](https://www.r-project.org/Rlogo.png){fig-align="center"}
+
+# Instalar y cargar librerias
+
+Chunk: CTRL + ALT + i
+
+```{r}
+# install.packages("markdown")
+library(markdown)   # Llamando la libreria
+```
+
+```{r}
+iris
+```
+
+# R Markdown (Título)
+
+[Markdown](https://rmarkdown.rstudio.com/)\
+
+[Tutorial de Markdown](https://tutorialmarkdown.com/sintaxis-extendida)
+
+## Subtitulo
+
+### Subsubtítulo
+
+## Estilo de letras
+
+-   **Negrita**
+-   *Cusrsiva*
+-   ~~Tachado~~
+
+## Insertar cuadros
+
+| Productos  | Cantidad |
+|------------|:--------:|
+| Producto 1 |   100    |
+| Producto 2 |   200    |
+| Producto 3 |   300    |
+| **Total**  | **300**  |
+
+## Justificar texto
+
+::: text-justify
+RStudio
+
+Utilizado por millones de personas semanalmente, el entorno de desarrollo integrado (IDE) RStudio es un conjunto de herramientas creadas para ayudarle a ser más productivo con R y Python.Utilizado por millones de personas semanalmente, el entorno de desarrollo integrado (IDE) RStudio es un conjunto de herramientas creadas para ayudarle a ser más productivo con R y Python.Utilizado por millones de personas semanalmente, el entorno de desarrollo integrado (IDE) RStudio es un conjunto de herramientas creadas para ayudarle a ser más productivo con R y Python.
+:::
+
+## Texto en colores
+
+Usted puede cambiar el color a las fuentes, para ello utilice:
+
+[y finalice el color con la función:]{style="color:#8B7500"}
+
+[Colores para R](https://r-charts.com/es/colores/)
+
+# Latex
+
+[Editor de Latex](https://latexeditor.lagrida.com/#google_vignette)\
+[Link de libro](https://www.latex-project.org/help/books/#spanish)
+
+## Forma 1
+
+Escribes letras $\int_{2}^{100} x^{2} + 2x+4$ y continuas escribiendo.
+
+## Forma 2
+
+$$\large   \int_{2}^{100} x^{2} + 2x+4$$
+
+$$
+\Large    \sum_{1}^{100} \frac{1}{x}(2^{x})
+$$
+
+$$
+\LARGE   \sum_{1}^{100} \frac{1}{x}(2^{x})
+$$
+
+$$
+\Large f(x) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left( -\frac{(x - \mu)^2}{2\sigma^2} \right)
+$$
+
+# Grafico
+
+```{r}
+cars
+```
+
+```{r}
+str(cars)
+```
+
+```{r}
+summary(cars)
+```
+
+```{r}
+# Grafico de Dispersón
+plot(cars,
+     main = "Distancia vs. velocidad",
+     xlab = "Velocidad",
+     ylab = "Distancia",
+     pch = 19,
+     col = "blue",
+     cex = 1.5
+     )
+```

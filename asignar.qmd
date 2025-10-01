@@ -1,0 +1,16 @@
+---
+title: "S5"
+format: html
+---
+
+Ctrl+Alt+i
+```{r}
+cars
+```
+```{r}
+hist(cars$dist)
+```
+```{r}
+hist(cars$dist, plot = FALSE)
+```
+

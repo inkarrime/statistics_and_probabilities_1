@@ -1,0 +1,168 @@
+---
+title: "Semana 6 - Regresion Lineal Simple"
+author: "Mariano Prado"
+date: 23 setiembre, 2025
+format: html
+output:
+  html_notebook:
+    toc: yes
+    toc_float:
+      collapsed: yes
+      smooth_scroll: no
+    number_sections: yes
+    theme: journal
+---
+
+# Regresion Lineal Simple (con data simulada)
+
+(Dos variables cuantitativas)
+
+En cierto país se estudió la captura de anchoas, en millones de toneladas métricas, (X).
+Los precios de harina de pescado, en dólares por tonelada (Y) en los últimos 13 años.
+
+```{r}
+Y = c(190, 160, 134,129,172,197,167,239,542,372,245,376,454)
+X = c(7.23,8.53,9.82,10.26,8.96,12.27,10.28,4.45,1.78,4.00,3.30,4.30,0.80)
+str(data.frame(Y,X))
+```
+
+$$
+Y = f(X)
+$$
+Si se captura mas cantidad de anchoas el precio de la harina de pescado disminuye.
+
+```{r}
+length(Y)
+length(X)
+```
+
+Tanto Y como X, deben tener la misma cantidad de datos, y no deben haber NA en ninguna de las variables.
+
+## Requisitos basicos para realizar un modelo de Regresion Lineal Simple
+
+- Tener claro la CAUSALIDAD de las variables, saber cual es la variable dependiente (Y) y la independiente (X).
+- Que exista correlación importante entre las variables.
+
+
+## Graficar los datos
+
+```{r}
+plot(X, Y, 
+     ylab = "Precio en dólares por TN (Y)", 
+     xlab = "Millones de TN métricas (X)",
+     
+     )
+```
+
+En le gráfico se observa que las variables tienen relación inversa.
+
+```{r}
+help(plot)
+```
+
+## Correlacion de los datos
+
+```{r}
+cor(Y,X)
+```
+
+La correlación entre la variables es alta e inversa.
+
+
+## Elaboracion del modelo
+
+```{r}
+modelo1 <- lm(Y ~ X)
+summary(modelo1)
+```
+α = 0.05  
+Si el el p-valor (Pr(>|t|)) es menor que α, entonces los parámetros (β0,β1) son significativos.
+
+```{r}
+cor(Y,X)^2 # Solo cuando la regresión lineal es simple.
+```
+
+
+## Modelo de regresion lineal simple
+
+**Modelo general**
+
+$$
+Y = \beta_0 - \beta_1X
+$$
+
+
+**Modelo hallado con los datos**
+
+$$
+Y =  461.006 - 30.427 X
+$$
+
+
+```{r}
+y0 <- 461.006 - 30.427 * 0
+y1 <- 461.006 - 30.427 * 1
+y2 <- 461.006 - 30.427 * 2
+```
+
+```{r}
+y2 - y1
+```
+
+**Analizando el Coeficiente de determinación** ($R^2$)
+
+Multiple R-squared:  0.7139
+
+**INTERPRETACION**: El 71.39% de la variación de los precioS (Y) es explicado por la variables captura en TM (X)
+
+
+## Grafica de los datos y el modelo generado
+
+```{r}
+plot(X, Y
+    ,ylab = "Precio harina"
+    ,xlab = "Captura en TM"
+    ,main = "Recta: Y = 461.006 - 30.427X"
+    )
+
+abline(modelo1   # Agrega la recta
+        ,col = "red"
+        ,lwd = 3)
+```
+
+$\beta_0$: 461.006, es el precio de la harina de pescado cuando la captura es cero TM.  
+$\beta_1$: -30.427, indica que el precio disminuye en 30.427 dolares cuando se incremmenta la captura en 1 TM.
+
+## Analisis de los Errores
+
+```{r}
+Y_predecido = predict(modelo1) # Los valores de Y que están en la recta
+Error = Y - Y_predecido
+data.frame(X, Y, Y_predecido, Error)
+```
+
+La suma de los errores deben ser igual a cero
+
+```{r}
+options(scipen = 999) #Elimina la notación científica decimal
+sum(Error)
+```
+
+## Prediccion con nuevos datos
+
+$$
+Y =  461.006 - 30.427 X
+$$
+
+```{r}
+X_nuevos <- data.frame(X=c(5, 10, 15, 15.15, 50, 100))
+Y_Prediccion <- predict(modelo1, X_nuevos)
+data.frame(X_nuevos, Y_Prediccion)
+```
+
+
+
+
+
+
+

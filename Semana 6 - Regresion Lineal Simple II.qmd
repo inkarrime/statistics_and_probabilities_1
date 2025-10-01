@@ -1,0 +1,160 @@
+---
+title: "Semana 6 - Regresion Lineal Simple II"
+author: "Mariano Prado"
+date: 26 setiembre, 2025
+format: html
+output:
+  html_notebook:
+    toc: yes
+    toc_float:
+      collapsed: yes
+      smooth_scroll: no
+    number_sections: yes
+    theme: journal
+---
+
+
+Trabajaremos con datos que corresponden a tres variables medidas en 20 personas que se encuentran en un programa de salud: edad, peso y cantidad de grasa en la sangre. Los datos son:
+
+```{r}
+edad  <- c(46,20,52,30,57,25,28,36,57,44,24,31,52,23,60,48,34,51,40,34)
+peso  <- c(84,73,65,70,76,69,63,72,79,75,27,89,65,57,59,69,60,79,75,82)
+grasa <- c(354,190,405,263,451,302,288,325,402,365,209,290,346,254,395,434,220,374,308,220)
+```
+
+
+```{r}
+datos <- data.frame(edad, peso, grasa)
+datos
+```
+
+```{r}
+#file.choose()
+```
+
+"G:\\.shortcut-targets-by-id\\13fB-Mc1GsOvFewbjZfihN78KKpjc-oG1\\1. Clases en UTEC\\Estadistica y Probabilidades 2025-2\\Grupo 6\\datos.csv"
+
+```{r}
+# Guardar el data frame como archivo csv
+
+write.csv(datos, file = "G:\\.shortcut-targets-by-id\\13fB-Mc1GsOvFewbjZfihN78KKpjc-oG1\\1. Clases en UTEC\\Estadistica y Probabilidades 2025-2\\Grupo 6\\datos.csv", row.names = FALSE)
+```
+
+
+```{r}
+library(readr)
+
+# Cargar los datos desde un CSV
+data_csv <- read_csv(file = "G:\\.shortcut-targets-by-id\\13fB-Mc1GsOvFewbjZfihN78KKpjc-oG1\\1. Clases en UTEC\\Estadistica y Probabilidades 2025-2\\Grupo 6\\datos.csv")
+data_csv
+```
+
+Antes de realizar cualquier proceso de regresión, debemos conocer la relación existente entre cada par de variables, para poder concluir si vale la pena o no calcular un modelo de regresión.
+
+```{r}
+pairs(data_csv)
+```
+
+Para cuantificar el grado de asociación lineal, calculamos el coeficiente de correlación lienal, el cual, cuando se tiene más de dos variables, se puede calcular como la matriz de coeficientes de correlación.
+
+```{r}
+cor(data_csv)
+```
+
+```{r}
+library(corrplot)
+corrplot(cor(data_csv))
+```
+
+Variable Y: Grasa
+Variable X: Edad
+
+$$ Grasa = f(Edad)$$
+
+```{r}
+plot(data_csv$edad, data_csv$grasa, 
+     xlab = "Edad", 
+     ylab = "Grasa ",
+     
+     )
+```
+
+```{r}
+modelo <- lm(data_csv$grasa ~ data_csv$edad)
+summary(modelo)
+```
+
+$R^2$ = 0.7642. El 76.42% de la variación de la grasa en sangre es explicado por la variable Edad.
+
+Variable Y: Grasa
+Variable X: Edad
+
+**El modelo de regresión lineal simple**
+
+$$ Y = 107.6328  + 5.3565 X $$
+
+
+**Grafica de los datos y el modelo generado**
+
+```{r}
+plot(data_csv$edad, data_csv$grasa
+    ,ylab = "Grasa"
+    ,xlab = "Edad"
+    ,main = "Recta: Y = 107.6328  + 5.3565 X" )
+
+abline(modelo  # Agrega la recta
+        ,col = "red"
+        ,lwd = 2)
+```
+
+```{r}
+modelo
+```
+
+
+$\beta_0$: 107.633, la cantidad de grasa en sangre es de 107.633 cuando la persona tiene cero años.
+$\beta_1$: 5.356, indica que la cantidad de grasa en sangre aumenta en 5.356 cuando la persona incrementa su edad en 1 año. q
+
+
+** Analisis de los Errores**
+
+```{r}
+grasa_predecido = predict(modelo) # Los valores de Y que están en la recta
+Error = data_csv$grasa - grasa_predecido
+data.frame(edad = data_csv$edad
+           ,grasa = data_csv$grasa
+           ,grasa_predecido
+           ,Error)
+```
+
+```{r}
+options(scipen = 999) #Elimina la notación científica decimal
+sum(Error)
+```
+
+
+** Predicción con nuevos datos **
+
+
+```{r}
+# Llamar los coeficientes del modelo
+modelo
+```
+
+PREDICCIÓN
+
+¿Cuando una persona tiene 80 años que cantidad de grasa tendría?
+
+```{r}
+107.632834 + 5.356494 * (80)
+```
+
+
+
+
+
+
+
+
+
+

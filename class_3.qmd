@@ -1,7 +1,7 @@
 ---
-title: "Laboratorio 2 de EyP"
+title: "Teoría 3"
 author: "Mariano Prado"
-date: "14 de abril, 2024"
+date: "01 Septiembre, 2025"
 format: html
 editor: visual
 output:
@@ -17,23 +17,91 @@ output:
     df_print: paged
 ---
 
-## Quarto
-
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+# Definimos valores
 
 ```{r}
-1 + 1
+x <- c( 250.5, 320.0, 345.5, 260.4, 358.2, 268.5, 380.1, 410.2, 430.4, 480.3, 410.3, 420.1)
+x
 ```
 
-You can add options to executable code like this
+# Media
 
 ```{r}
-#| echo: false
-2 * 2
+round(mean(x),2)
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+## Otro ejemplo para detallar la media
+
+Valores extremos: Solo cambié un valor y la media cambió drasticamente solo por un valor.
+
+```{r}
+y <- c( 250.5, 320.0, 345.5, 260.4, 358.2, 268.5, 380.1, 410.2, 430.4, 480.3, 410.3, 4200)
+round(mean(y),2)
+```
+
+## La suma de los valores restados por la media
+
+Da como resultado 0
+
+```{r}
+options(scipen = 999)
+sum(y - mean(y))
+```
+
+## Media Aritmética Ponderada
+
+Pesos o equivalencias
+
+# Mediana
+
+```{r}
+z <- c(50, 77, 53, 76,  63, 64, 75, 54,  52, 80)
+#Cualquiera de los dos se halla la mediana
+median(z)
+quantile(x, 0.5)
+```
+
+```{r}
+summary(z)
+```
+
+## Propiedades de la mediana
+
+```{r}
+t <- c(50, 77, 53, 76,  63, 64, 75, 54,  52, 800)
+mean(z)
+mean(t)
+median(z)
+median(t)
+quantile(t, 0.5)
+```
+
+Ambos datos se complementan pero para manejo de datos cerca al conjunto es la mediana.
+
+```{r}
+summary(z)
+```
+
+```{r}
+summary(t)
+```
+
+No sucede de forma recurrente. Y el 800 es un outlayer. \# Moda a
+
+# Quantiles
+
+```{r}
+
+q <- c(10.5, 10.9, 11.2, 11.3, 11.5, 11.5, 11.7, 12.8, 12.9, 13.6, 13.7, 13.9, 14.0, 15.6)
+```
+
+```{r}
+quantile(q, probs = c(0.2,0.4,0.6,0.8)) #Para que alguien este en el quinto superior 
+quantile(q, probs = seq(from = 0.2, to = 0.8, by = 0.2))
+```
+
+Quartiles
+
+```{r}
+quantile(q, probs = c(0.25,0.50,0.75))
+```

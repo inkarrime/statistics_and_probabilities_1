@@ -1,0 +1,33 @@
+---
+title: "Teoría 5"
+author: "Mariano Prado"
+date: "16 Septiembre, 2025"
+format: html
+editor: visual
+output:
+  html_notebook:
+    toc: yes                # Crea tabla de contenido
+    toc_float:             
+       collapsed: yes       # Aparecen solo con los encabezados de nivel superior
+       smooth_scroll: no    # Desplazamientos "animados" en vez de directos
+    number_sections: yes    # numerar secciones y subsecciones
+    theme: journal      # Tema
+  html_document:
+    toc: yes
+    df_print: paged
+---
+
+```{r}
+cars
+```
+
+```{r}
+hist(cars$dist)
+```
+
+Revisar los plots
+
+```{r}
+hist(cars$dist
+     , plot=FALSE)
+```

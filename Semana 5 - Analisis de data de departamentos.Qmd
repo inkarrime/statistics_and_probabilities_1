@@ -1,0 +1,529 @@
+---
+title: "Analisis Bivariado - Tablas y Graficos"
+author: "Mariano Ignacio Prado Urbano"
+date: "16 de setiembre, 2025"
+output:
+  html_notebook:
+    toc: yes                # Crea tabla de contenido
+    toc_float:             
+       collapsed: yes       # Aparecen solo con los encabezados de nivel superior
+       smooth_scroll: no    # Desplazamientos "animados" en vez de directos
+    number_sections: yes    # numerar secciones y subsecciones
+    theme: journal
+  html_document:
+    toc: yes 
+    df_print: paged 
+---
+
+# Cargar la base de datos
+
+La base de datos fue recolectada en el año 2015, en Mexico. Tienen las variables precio, avaluó y administración están en millones de pesos. La variable administración corresponde al valor mensual en pesos por el servicio de administración del edificio. La variable terminado hace referencia a si el dpto. tiene reformas o mejoras en relación al estado del dpto nuevo.
+
+```{r}
+datos <- read.table(file = 'https://tinyurl.com/hwhb769', header=T)
+datos
+```
+
+```{r}
+str(datos)
+```
+
+
+# Descriptores numericos
+
+# Media 
+
+```{r}
+mean(datos$mt2) # Univariado
+```
+
+
+Media desagregada
+
+```{r}
+by(datos$mt2, datos$estrato, mean) # Bivariado
+```
+
+# Mediana
+
+```{r}
+median(datos$mt2)
+```
+Mediana desagregada
+
+```{r}
+by(datos$mt2, datos$estrato, median)
+```
+
+## Moda
+
+```{r}
+library(DescTools)
+Mode(datos$precio)
+```
+Moda desagregada
+
+```{r}
+by(datos$mt2, datos$estrato, Mode)
+```
+
+## Desviacion estandar
+
+```{r}
+sd(datos$mt2)
+```
+DE desagregado
+
+```{r}
+by(datos$mt2, datos$estrato, sd)
+```
+
+## Coeficiente de variacion
+
+```{r}
+library(raster)
+cv(datos$precio)
+```
+
+CV desagregado
+
+```{r}
+by(datos$mt2, datos$estrato, cv)
+```
+
+## Coeficiente de Asimetria
+
+```{r}
+library(e1071)
+skewness(datos$precio)
+```
+CA desagregado
+
+```{r}
+by(datos$mt2, datos$estrato, skewness)
+```
+
+# Graficos de Variables
+
+## Variables cualitativas 
+
+**Estrato**: Variable categórica **ordinal o jerarquica**, **requiere convertirlo en ordinal**.
+
+```{r}
+unique(datos$estrato)
+```
+
+```{r}
+str(datos$estrato)
+```
+
+
+```{r}
+# Convirtiendo la variable estrato en una cualitativa ordinal.
+datos$estrato <- ordered(datos$estrato,levels=c(2,3,4,5,6))
+str(datos$estrato)
+```
+
+```{r}
+unique(datos$estrato)
+```
+
+
+## Tabla de frecuencias absoluta (Univariado)
+
+Cantidad de departamentos por estrato
+
+```{r}
+tabla1 <- table(datos$estrato)
+tabla1
+data.frame(tabla1)
+
+```
+
+## Tabla de frecuencias acumulada
+
+```{r}
+Tablacum1 <- cumsum(tabla1)
+data.frame(Tablacum1)
+```
+
+## Tabla de frecuencia relativa porcentual
+
+% de departamentos por estrato
+
+```{r}
+tablap1 <- round(addmargins(prop.table(tabla1)*100), 2)
+tablap1
+data.frame(tablap1)
+```
+
+## Tabla de frecuencia absoluta y relativa porcentual
+
+```{r}
+#Otra manera
+#install.packages("janitor")
+library(janitor)
+data.frame(tabyl(datos$estrato))
+
+```
+
+## Tabla de frecuencia relativa porcentual acumulada
+
+```{r}
+frec_relativa_porc_acumul <- cumsum(tabla1*100)/margin.table(tabla1)
+data.frame(frec_relativa_porc_acumul)
+```
+
+## Grafico de barras (Univariado)
+
+```{r}
+tablag <- round(prop.table(tabla1)*100, 2)
+tablag
+```
+
+```{r}
+barras <- barplot(tablag  # Llama la tabla
+                  ,ylim=c(0, 40)
+                  ,xlab='Estrato socioeconómico'
+                  ,ylab='Frecuencia relativa',
+                  las=1
+                  ,col='yellow'
+                  ,main = "% de departamentos por estrato")
+
+text(x=barras, y=tablag, pos=3, cex=0.8, col="blue", label=round(tablag, 4))
+```
+
+
+
+```{r}
+barras <- barplot(tablag
+                  ,xlim=c(0, 40)
+                  ,ylab='Estrato socioeconómico'
+                  ,xlab='Frecuencia relativa',
+                  las=1
+                  ,col='green'
+                  ,horiz = TRUE
+                  ,main = "% de departamentos por estrato")
+text(y=barras, x=tablag, pos=4, cex=1.0, col="blue", label=round(tablag, 4))
+```
+
+## Grafico de Pie
+
+```{r}
+nombres <- paste('Estrato ', 2:6)
+pie(x=tablag, labels=nombres, main='Gráfico de pastel NO recomendado!!!')
+```
+
+
+```{r}
+tablag
+```
+
+
+```{r}
+nombres <- paste('Estrato ', 2:6)
+pie(x=tablag
+    ,labels= tablag
+    ,main='% de departamentos por estrato'
+    ,col= rainbow(length(tablag)))
+
+legend("bottomright", legend = nombres, cex = 0.8, fill = rainbow(length(tabla1)))
+
+```
+
+
+## Tabla Cruzada o de doble entrada (Bivariado - dos variables cualitativas) - Frecuencia absoluta
+
+Cantidad de departamentos por estrato y estacionamiento
+
+```{r}
+tabla2 <- table(datos$parqueadero, datos$estrato)
+addmargins(tabla2)
+
+```
+
+### Frecuencias relativas
+
+La suma de todos los % es 100%
+
+% de departamentos por estrato y estacionamiento
+
+```{r}
+addmargins(round(prop.table(tabla2)*100, 2))
+```
+
+
+### Frecuencias relativas - Fila
+
+Las filas suman 100%
+
+```{r}
+addmargins(round(prop.table(tabla2, 1)*100, 2), 2)
+```
+
+### Frecuencias relativas - Columna
+
+Las columnas suman 100%
+
+```{r}
+addmargins(round(prop.table(tabla2, 2)*100, 2), 1)
+```
+
+## Grafico de barras de tabla cruzada
+
+```{r}
+barplot(tabla2)
+tabla2
+```
+
+```{r}
+barplot(tabla2, beside=TRUE)
+```
+
+## Grafico de mosaicos (dos variables cualitativas)
+
+
+```{r}
+library(stats)
+mosaicplot(~ parqueadero + estrato, # Las variables cualitativas a cruzar 
+           ,data = datos # La tabla de datos
+           ,color = 2:10 # vector de colores, T = banco y negro. 
+           ,las = 1
+           ,main = "estrato vs estacionamiento") # estilo de los ejes
+tabla2
+```
+
+# Variables Cuantitativas
+
+## Histograma
+
+```{r}
+hist(datos$mt2
+     ,breaks = 10
+     ,col = "lightblue"
+     ,labels = TRUE
+     ,ylim = c(0,360)
+     ,main = "Area del departamento mt2"
+     ,xlab = "mt2"
+     )
+
+summary(datos$mt2)
+```
+
+```{r}
+hist(datos$mt2
+     ,plot = F
+     )
+```
+
+## Boxlot
+
+```{r}
+summary(datos$mt2)
+```
+
+```{r}
+caja <- boxplot(datos$mt2, col = "green",
+        main = "Area en mt2")
+```
+
+```{r}
+caja
+```
+
+## Cruzado una variable cuantitativa con una cualitativa (Bivariado)
+
+```{r}
+caja2 <- boxplot(datos$mt2 ~ datos$estrato, col = 3,
+        main = "Area en mt2")
+```
+
+
+```{r}
+caja2
+```
+
+
+## Cruzando una variable cuantitiva con cuantitativa (Bivariado)
+
+Gráfico de dispersión
+
+
+```{r}
+plot(datos$precio, datos$ mt2, 
+     pch = 20, 
+     col = "blue", 
+     main = "Precio vs. mt2")
+```
+
+
+Función `smoothScatter` para visualizar datos atipicos.
+
+```{r}
+smoothScatter(datos$precio,datos$mt2
+              ,pch = 20
+              ,col = "red"
+              ,bandwidth = 20 #Ventana
+              )
+```
+
+Puede que hayas notado que algunos puntos se muestran en el gráfico. Estos puntos se corresponden con los puntos de las áreas con las densidades regionales menores y son útiles para identificar datos atípicos.
+
+## Grafico de dispersión con colores
+
+```{r}
+plot(x = datos$precio, y = datos$mt2, 
+     pch = 20, 
+     col = factor(datos$estrato), 
+     main = "Precio vs. mt2")
+
+legend(x = "topleft", legend = levels(factor(datos$estrato)), fill = c(1:5), title = "Estrato")
+```
+
+
+```{r}
+plot(x = datos$precio, y = datos$mt2, 
+     pch = 20, 
+     col = factor(datos$parqueadero), 
+     main = "Precio vs. mt2")
+
+legend(x = "topleft", legend = levels(factor(datos$parqueadero)), fill = c(1:2), title = "Parqueadero")
+```
+
+## Cruzando 3 variables cuantitativas
+
+```{r}
+pairs(~ datos$precio + datos$mt2 + datos$avaluo + datos$administracion)
+```
+
+## Estrato vs Mt2 - Cualitativa vs Cuantitativa (Bivariado)
+
+```{r}
+summary(datos$precio)
+```
+
+```{r}
+library(dplyr)
+
+datos %>%
+  group_by(datos$estrato) %>%
+  summarize(media = mean(mt2,na.rm=TRUE),
+            sd = sd(mt2,na.rm=TRUE),
+            cv = sd/media*100,
+            p25 = quantile(mt2,0.25,na.rm=TRUE, type =3),
+            mediana = median(mt2,na.rm=TRUE),
+            p75 = quantile(mt2,0.75,na.rm=TRUE, type =3)
+            ) %>%
+ arrange(desc(media))
+```
+El `arrange` le ordenamos de acuerdo a una variable
+
+#### Coeficiente de variación que tomamos para ejercicios
+Como regla empírica, denominaremos al coeficiente de variación en función de tres rangos:
+
+-   Menor o igual a 30% será bajo.
+-   Mayor que 30% y menor o igual a 60% será medio
+-   Mayor a 60% será alto.
+
+
+
+## Diagrama de Densidad
+
+```{r}
+par(mfrow = c(1, 2)) # Genera los espacios
+hist(datos$mt2,  breaks = 10, col = "lightblue", freq = FALSE, main = "Histograma en mt2")
+lines(density(datos$mt2), lwd = 2, col = "red")
+
+plot(density(datos$mt2), lwd = 2, col = "red", main = "Densidad mt2")
+
+```
+
+```{r}
+summary(datos$mt2)
+```
+
+
+# Covariancia (Bivariado )
+
+La covarianza es el valor que refleja en qué cuantía **dos variables aleatorias CUANTITATIVAS** que varían de forma conjunta respecto a sus medias.
+
+```{r}
+cov(datos$precio,datos$mt2)
+```
+
+Cuando el mt2 sube, el precio también sube, o viceversa.
+
+## Propiedades de la Covariancia
+
+### Cov (X, b) = 0, b es una constante.
+
+```{r}
+b <- runif(694, min=4, max=4)
+
+cov(datos$precio, b)
+```
+
+### Cov (X, X) = Var(X) , la covarianza de una variable y de sí misma es igual a su varianza.
+
+```{r}
+cov(datos$precio, datos$precio)
+var(datos$precio)
+```
+
+### Cov (b·X, c·Y) = c·b ·Cov(X,Y), b y c dos constantes.
+
+```{r}
+b <- runif(694, min=4, max=4)
+c <- runif(694, min=6, max=6)
+
+cov(datos$precio*b, datos$mt2*c)
+4*6* cov(datos$precio,datos$mt2)
+
+```
+
+### Cov (b+X, c+Y) = Cov(X,Y) sumar dos constantes cualesquiera a cada variable, no afecta a la covarianza.
+
+```{r}
+cov(datos$precio+b, datos$mt2+c)
+cov(datos$precio,datos$mt2)
+```
+
+# Correlacion
+
+```{r}
+round(cor(datos$precio,datos$mt2), 2)
+```
+
+La correlación es ALTA y positiva
+
+Existe una ALTA correlación positiva.
+
+```{r}
+round(cor(datos$alcobas,datos$banos),2)
+```
+
+La correlación es MEDIA y positiva
+
+```{r}
+par(mfrow = c(1, 2))
+plot(datos$alcobas,datos$banos, pch = 20, col = "red", main = "Baños vs. alcobas")
+plot(datos$precio,datos$mt2, pch = 20, col = "blue", main = "Precio vs. mt2")
+```
+En la primera no hay correlación y en la segunda sí.
+
+## Propiedades de la Correlacion
+
+```{r}
+cor(datos$precio,datos$avaluo)
+```
+
+Cambiando de escala
+
+```{r}
+cor(datos$precio*100, datos$avaluo*5)
+```
+
+Ante los cambios de escala el coeficiente de correlación NO varia.
+
+
+
